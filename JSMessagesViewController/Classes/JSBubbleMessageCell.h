@@ -15,6 +15,14 @@
 #import <UIKit/UIKit.h>
 #import "JSBubbleView.h"
 
+@class JSBubbleMessageCell;
+
+@protocol JSBubbleMessageDelegate
+@optional
+- (void) deleteMessageForCell:(JSBubbleMessageCell *) thisCell;
+
+@end
+
 /**
  *  The `JSBubbleMessageCell` class defines the attributes and behavior of the cells that appear in `JSMessagesViewController`. This class includes properties and methods for setting and managing cell content.
  */
@@ -26,6 +34,8 @@
  *  @see JSBubbleMessageType.
  */
 @property (weak, nonatomic, readonly) JSBubbleView *bubbleView;
+
+@property (weak, nonatomic) id<JSBubbleMessageDelegate> delegate;
 
 /**
  *  Returns the label used to display the timestamp for the cell. This property may be `nil` if no timestamp is provided. 
@@ -64,6 +74,7 @@
                       hasTimestamp:(BOOL)hasTimestamp
                          hasAvatar:(BOOL)hasAvatar
                        hasSubtitle:(BOOL)hasSubtitle
+                hasTimestampInside:(BOOL)hasTimestampInside
                    reuseIdentifier:(NSString *)reuseIdentifier;
 
 #pragma mark - Setters
@@ -121,6 +132,7 @@
 + (CGFloat)neededHeightForBubbleMessageCellWithText:(NSString *)text
                                           timestamp:(BOOL)hasTimestamp
                                              avatar:(BOOL)hasAvatar
-                                           subtitle:(BOOL)hasSubtitle;
+                                           subtitle:(BOOL)hasSubtitle
+                                    timestampInside:(BOOL)timestampInside;
 
 @end

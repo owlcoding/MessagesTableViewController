@@ -66,6 +66,10 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
                                                                                              action:@selector(handleLongPressGesture:)];
     [recognizer setMinimumPressDuration:0.4f];
     [self addGestureRecognizer:recognizer];
+    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                             action:@selector(handleDoubleTapGesture:)];
+    tapRec.numberOfTapsRequired = 2;
+    [self addGestureRecognizer:tapRec];
 }
 
 - (void)configureTimestampLabel
@@ -185,6 +189,7 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
                       hasTimestamp:(BOOL)hasTimestamp
                          hasAvatar:(BOOL)hasAvatar
                        hasSubtitle:(BOOL)hasSubtitle
+                hasTimestampInside:(BOOL)hasTimestampInside
                    reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [self initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
@@ -230,6 +235,9 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
 - (void)setMessage:(NSString *)msg
 {
     self.bubbleView.textView.text = msg;
+    self.bubbleView.textView.userInteractionEnabled = NO;
+    NSLog(@"gesture recognizers for label: %@", self.bubbleView.textView.gestureRecognizers);
+
 }
 
 - (void)setTimestamp:(NSDate *)date
@@ -265,6 +273,7 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
                                           timestamp:(BOOL)hasTimestamp
                                              avatar:(BOOL)hasAvatar
                                            subtitle:(BOOL)hasSubtitle
+                                    timestampInside:(BOOL)timestampInside
 {
     CGFloat timestampHeight = hasTimestamp ? kJSTimeStampLabelHeight : 0.0f;
     CGFloat avatarHeight = hasAvatar ? kJSAvatarImageSize : 0.0f;
@@ -305,7 +314,7 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
-    return (action == @selector(copy:));
+    return ( (action == @selector(copy:)) || ( action == @selector(delete:)) );
 }
 
 - (void)copy:(id)sender
@@ -313,15 +322,16 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
     [[UIPasteboard generalPasteboard] setString:self.bubbleView.textView.text];
     [self resignFirstResponder];
 }
-
-#pragma mark - Gestures
-
-- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)longPress
+- (void) delete:(id)sender
 {
-    if(longPress.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
-        return;
-    
+    [self.delegate deleteMessageForCell:self];
+    NSLog(@"delete message");
+}
+#pragma mark - Gestures
+- (void) showMenu
+{
     UIMenuController *menu = [UIMenuController sharedMenuController];
+//    menu.menuItems = @[[[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(delete:)], ];
     CGRect targetRect = [self convertRect:[self.bubbleView bubbleFrame]
                                  fromView:self.bubbleView];
     
@@ -334,6 +344,16 @@ static const CGFloat kJSSubtitleLabelHeight = 15.0f;
                                                  name:UIMenuControllerWillShowMenuNotification
                                                object:nil];
     [menu setMenuVisible:YES animated:YES];
+}
+- (void)handleDoubleTapGesture:(UITapGestureRecognizer *) tap
+{
+    [self showMenu];
+}
+- (void)handleLongPressGesture:(UILongPressGestureRecognizer *)longPress
+{
+    if(longPress.state != UIGestureRecognizerStateBegan || ![self becomeFirstResponder])
+        return;
+    [self showMenu];
 }
 
 #pragma mark - Notifications

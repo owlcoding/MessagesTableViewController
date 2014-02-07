@@ -219,6 +219,7 @@
                                                   hasTimestamp:hasTimestamp
                                                      hasAvatar:hasAvatar
                                                    hasSubtitle:hasSubtitle
+                                            hasTimestampInside:[[self delegate] timestampPolicy] == JSMessagesViewTimestampPolicyInside
                                                reuseIdentifier:CellIdentifier];
     }
     
@@ -259,11 +260,13 @@
     BOOL hasTimestamp = [self shouldHaveTimestampForRowAtIndexPath:indexPath];
     BOOL hasAvatar = [self shouldHaveAvatarForRowAtIndexPath:indexPath];
 	BOOL hasSubtitle = [self shouldHaveSubtitleForRowAtIndexPath:indexPath];
+    BOOL timestampInside = [self.delegate timestampPolicy] == JSMessagesViewTimestampPolicyInside;
     
     return [JSBubbleMessageCell neededHeightForBubbleMessageCellWithText:text
                                                                timestamp:hasTimestamp
                                                                   avatar:hasAvatar
-                                                                subtitle:hasSubtitle];
+                                                                subtitle:hasSubtitle
+                                                         timestampInside:timestampInside];
 }
 
 #pragma mark - Messages view controller

@@ -44,7 +44,12 @@ typedef NS_ENUM(NSUInteger, JSMessagesViewTimestampPolicy) {
      *  Displays a timestamp based on the result of the optional delegate method `hasTimestampForRowAtIndexPath:`. 
      *  @see JSMessagesViewDelegate.
      */
-    JSMessagesViewTimestampPolicyCustom
+    JSMessagesViewTimestampPolicyCustom,
+    /**
+     *  Displays timestamp INSIDE a bubble
+     *  @see JSMessagesViewDelegate
+     */
+    JSMessagesViewTimestampPolicyInside,
 };
 
 /**
@@ -89,6 +94,14 @@ typedef NS_ENUM(NSUInteger, JSMessagesViewSubtitlePolicy) {
      *  Does not display any subtitles.
      */
     JSMessagesViewSubtitlePolicyNone
+};
+
+
+typedef NS_ENUM(NSUInteger, JSMessagesViewSectionsPolicy) {
+    
+    JSMessagesViewSectionsPolicySingleSection,
+    
+    JSMessagesViewSectionsPolicyMultipleSections,
 };
 
 /**
@@ -235,6 +248,20 @@ typedef NS_ENUM(NSUInteger, JSMessagesViewSubtitlePolicy) {
  *  @return A string containing the subtitle for the message at indexPath. This value may be `nil`.
  */
 - (NSString *)subtitleForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+
+@optional
+
+#pragma mark - sections handling
+/**
+ *  Asks for handling of dates - can be separate sections for each date or a single section for everything
+ *  If result is `JSMessagesViewSectionsPolicyMultipleSections` tableView data source needs to return a 
+ *  number of sections and a section view as well.
+ *  @return A constant describing sections policy.
+ *  @see JSMessageInputViewStyle.
+ *  @default `JSMessagesViewSectionsPolicySingleSection`
+ */
+- (JSMessagesViewSectionsPolicy) sectionsPolicy;
 
 @end
 
