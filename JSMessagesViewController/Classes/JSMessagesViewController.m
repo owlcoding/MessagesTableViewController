@@ -92,6 +92,9 @@
     [inputView.sendButton addTarget:self
                              action:@selector(sendPressed:)
                    forControlEvents:UIControlEventTouchUpInside];
+    [inputView.plusButton addTarget:self
+                             action:@selector(plusPressed:)
+                   forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:inputView];
     _messageInputView = inputView;
@@ -186,7 +189,10 @@
 {
     [self.delegate didSendText:[self.messageInputView.textView.text js_stringByTrimingWhitespace]];
 }
-
+- (void) plusPressed:(UIButton *) sender
+{
+    [self.delegate didTapPlus];
+}
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

@@ -118,6 +118,8 @@ typedef NS_ENUM(NSUInteger, JSMessagesViewSectionsPolicy) {
  */
 - (void)didSendText:(NSString *)text;
 
+- (void) didTapPlus;
+
 /**
  *  Asks the delegate for the message type for the row at the specified index path.
  *

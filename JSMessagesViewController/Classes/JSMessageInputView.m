@@ -44,8 +44,8 @@
 - (void)configureInputBarWithStyle:(JSMessageInputViewStyle)style
 {
     CGFloat sendButtonWidth = (style == JSMessageInputViewStyleClassic) ? 78.0f : 64.0f;
-    
-    CGFloat width = self.frame.size.width - sendButtonWidth;
+    CGFloat plusButtonWidth = 30;
+    CGFloat width = self.frame.size.width - sendButtonWidth - plusButtonWidth;
     CGFloat height = [JSMessageInputView textViewLineHeight];
     
     JSMessageTextView *textView = [[JSMessageTextView  alloc] initWithFrame:CGRectZero];
@@ -53,7 +53,7 @@
 	_textView = textView;
     
     if(style == JSMessageInputViewStyleClassic) {
-        _textView.frame = CGRectMake(6.0f, 3.0f, width, height);
+        _textView.frame = CGRectMake(plusButtonWidth + 6.0f, 3.0f, width, height);
         _textView.backgroundColor = [UIColor whiteColor];
         
         self.image = [[UIImage imageNamed:@"input-bar-background"] resizableImageWithCapInsets:UIEdgeInsetsMake(19.0f, 3.0f, 19.0f, 3.0f)
@@ -69,7 +69,7 @@
         [self addSubview:inputFieldBack];
     }
     else {
-        _textView.frame = CGRectMake(4.0f, 4.5f, width, height);
+        _textView.frame = CGRectMake(plusButtonWidth + 4.0f, 4.5f, width, height);
         _textView.backgroundColor = [UIColor clearColor];
         _textView.layer.borderColor = [UIColor colorWithWhite:0.8f alpha:1.0f].CGColor;
         _textView.layer.borderWidth = 0.65f;
@@ -126,6 +126,11 @@
     [self setSendButton:sendButton];
 }
 
+- (void) configurePlusButton
+{
+    UIButton *plusButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [self setPlusButton:plusButton];
+}
 - (instancetype)initWithFrame:(CGRect)frame
                         style:(JSMessageInputViewStyle)style
                      delegate:(id<UITextViewDelegate, JSDismissiveTextViewDelegate>)delegate
@@ -137,6 +142,7 @@
         [self setup];
         [self configureInputBarWithStyle:style];
         [self configureSendButtonWithStyle:style];
+        [self configurePlusButton];
         
         _textView.delegate = delegate;
         _textView.keyboardDelegate = delegate;
@@ -181,6 +187,17 @@
     _sendButton = btn;
 }
 
+- (void) setPlusButton:(UIButton *)plusButton
+{
+    if (_plusButton) {
+        [_plusButton removeFromSuperview];
+    }
+    CGSize size = CGSizeMake(25, 25);
+    CGPoint origin = CGPointMake((self.textView.frame.origin.x - size.width) / 2.0f, (self.textView.frame.size.height - size.height) / 2.0f);
+    plusButton.frame = (CGRect) { .origin = origin, .size = size };
+    [self addSubview:plusButton];
+    _plusButton = plusButton;
+}
 #pragma mark - Message input view
 
 - (void)adjustTextViewHeightBy:(CGFloat)changeInHeight
@@ -212,6 +229,9 @@
     
     // from iOS 7, the content size will be accurate only if the scrolling is enabled.
     self.textView.scrollEnabled = YES;
+    
+    // adjust plus button position
+    [self setPlusButton:_plusButton];
     
     if(numLines >= 6) {
         CGPoint bottomOffset = CGPointMake(0.0f, self.textView.contentSize.height - self.textView.bounds.size.height);
