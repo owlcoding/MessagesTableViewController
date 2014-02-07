@@ -18,10 +18,10 @@
 #import "JSAvatarImageFactory.h"
 #import "NSString+JSMessagesView.h"
 
-#define kMarginTop 8.0f
-#define kMarginBottom 4.0f
+#define kMarginTop 1.0f
+#define kMarginBottom 1.0f
 #define kPaddingTop 4.0f
-#define kPaddingBottom 8.0f
+#define kPaddingBottom 1.0f
 #define kBubblePaddingRight 35.0f
 
 
@@ -83,9 +83,11 @@
         [self addSubview:textView];
         [self bringSubviewToFront:textView];
         _textView = textView;
+//        textView.layer.borderWidth = 1;
+//        textView.layer.borderColor = [[UIColor redColor] CGColor];
         
         if([_textView respondsToSelector:@selector(textContainerInset)]) {
-            _textView.textContainerInset = UIEdgeInsetsMake(8.0f, 4.0f, 2.0f, 4.0f);
+            _textView.textContainerInset = UIEdgeInsetsMake(1.0f, 1.0f, 1.0f, 1.0f);
         }
         
         [self addTextViewObservers];
