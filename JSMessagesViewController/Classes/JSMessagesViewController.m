@@ -356,13 +356,14 @@
 	if(![self shouldAllowScroll])
         return;
 	NSInteger sections = self.tableView.numberOfSections;
-    
-    NSInteger rows = [self.tableView numberOfRowsInSection:sections - 1];
-    
-    if(rows > 0) {
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:sections - 1]
-                              atScrollPosition:UITableViewScrollPositionBottom
-                                      animated:animated];
+    if (sections > 0) {
+        NSInteger rows = [self.tableView numberOfRowsInSection:sections - 1];
+        
+        if(rows > 0) {
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:rows - 1 inSection:sections - 1]
+                                  atScrollPosition:UITableViewScrollPositionBottom
+                                          animated:animated];
+        }        
     }
 }
 
